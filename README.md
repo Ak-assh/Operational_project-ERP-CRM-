@@ -1,181 +1,167 @@
 # Mini ERP + CRM Operations Portal
 
-> Enterprise-grade operational portal for wholesale & distribution companies managing Customer CRM, Product & Inventory Stock, Sales Challans, and Role-Based Access Control.
-
-[![Documentation](https://img.shields.io/badge/Documentation-Case%20Study%20Doc-blue?style=flat-square)](file:///c:/Users/KIIT/Desktop/Operational_Portal/ASSIGNMENT_DOCUMENTATION.md)
-[![Frontend: Vercel](https://img.shields.io/badge/Frontend-Vercel-black?style=flat-square&logo=vercel)](https://vercel.com)
-[![Backend: Render](https://img.shields.io/badge/Backend-Render-informational?style=flat-square&logo=render)](https://render.com)
-[![Database: Supabase](https://img.shields.io/badge/Database-Supabase%20PostgreSQL-emerald?style=flat-square&logo=supabase)](https://supabase.com)
-[![Monorepo: pnpm](https://img.shields.io/badge/Monorepo-pnpm%20workspaces-amber?style=flat-square&logo=pnpm)](https://pnpm.io)
-
-> 📄 **Complete Case Study Submission & Architecture Guide**: See [`ASSIGNMENT_DOCUMENTATION.md`](file:///c:/Users/KIIT/Desktop/Operational_Portal/ASSIGNMENT_DOCUMENTATION.md) for full assignment details, server setup, credentials, and business logic explanation.
-
+> **Enterprise Operations Management Platform** for Wholesale & Distribution Enterprises.  
+> Streamlining Customer Relationship Management (CRM), Catalog & Inventory Stock Control, Sales Challans, and Granular Role-Based Access Control (RBAC).
 
 ---
 
-## 🏗️ Repository Architecture
+## 🌐 Live Production Links & Resources
 
-The project is structured as a clean, highly readable monorepo with top-level `frontend`, `backend`, and `shared` directories:
+| Service / Resource | Production URL | Description | Status |
+|---|---|---|---|
+| 🚀 **Live Frontend** | [https://operational-project-erp-crm-fronten.vercel.app/login](https://operational-project-erp-crm-fronten.vercel.app/login) | Vercel SPA Client | `Active` |
+| ⚡ **Live Backend API** | [https://operational-project-erp-crm.onrender.com](https://operational-project-erp-crm.onrender.com) | Render Express REST API | `Active` |
+| 🗄️ **Production Database** | [Supabase PostgreSQL Dashboard](https://supabase.com/dashboard/project/kquffpqwvxltywxdmjhc) | Cloud PostgreSQL Instance | `Active` |
+| 📦 **GitHub Repository** | [https://github.com/Ak-assh/Operational_project-ERP-CRM-](https://github.com/Ak-assh/Operational_project-ERP-CRM-) | Source Code & Commit History | `Public` |
+| 📄 **Case Study Doc** | [`ASSIGNMENT_DOCUMENTATION.md`](file:///c:/Users/KIIT/Desktop/Operational_Portal/ASSIGNMENT_DOCUMENTATION.md) | Technical & Case Study Specs | `Complete` |
+| 🧪 **Postman Collection** | [`postman_collection.json`](file:///c:/Users/KIIT/Desktop/Operational_Portal/postman_collection.json) | API Contract Testing Specs | `Included` |
+
+---
+
+## 🔑 Demo Access Credentials
+
+To test role-based permissions and interface features, use the pre-seeded credentials below (Password for all accounts: `password123`):
+
+| Role | User Email | Password | Access Privileges & Functional Scope |
+|---|---|---|---|
+| 👑 **Admin** | `admin@portal.com` | `password123` | Unrestricted administrative access across CRM, Inventory, Stock Movements, Challans, and Users |
+| 💼 **Sales** | `sales@portal.com` | `password123` | Customer lead/active management, follow-up notes, sales challan creation and confirmation |
+| 📦 **Warehouse** | `warehouse@portal.com` | `password123` | Product catalog maintenance, stock allocation, stock IN/OUT audit logging, low stock alerts |
+| 💳 **Accounts** | `accounts@portal.com` | `password123` | View-only CRM & Inventory audit, sales order verification, invoice PDF dispatch export |
+
+> 💡 **Self-Registration**: New users can also register dynamically via the **"New User? Signup"** feature on the login screen (`POST /api/auth/signup`).
+
+---
+
+## 🏗️ Monorepo Architecture
+
+The project is engineered as a clean, decoupled monorepo using `pnpm` workspaces:
 
 ```
 Operational_Portal/
-├── frontend/                   # React + Vite + Tailwind CSS + TanStack Query + Zustand (Vercel Ready)
+├── frontend/                   # React 18 + Vite + Tailwind CSS + TanStack Query + Zustand
 │   ├── src/
-│   │   ├── components/         # Shared UI components (Data Tables, Badges, Modals, Layouts)
-│   │   ├── features/           # Feature modules (auth, customers, products, challans, dashboard)
-│   │   ├── services/           # Axios API client
-│   │   └── store/              # Zustand global state store
-│   ├── vercel.json             # Vercel SPA deployment config
+│   │   ├── components/         # Shared UI components (Data Tables, Modals, Badges, Layouts)
+│   │   ├── features/           # Domain feature modules (auth, customers, products, challans, dashboard)
+│   │   ├── services/           # Axios HTTP client with interceptors
+│   │   └── store/              # Zustand global authentication & UI state
+│   ├── vercel.json             # Vercel SPA client rewrite configuration
 │   └── vite.config.ts
 │
-├── backend/                    # Express REST API Server + Prisma ORM (Render Ready)
+├── backend/                    # Express REST API + Prisma ORM + PostgreSQL
 │   ├── prisma/
-│   │   ├── schema.prisma       # PostgreSQL schema with Supabase pooling & direct migration URLs
-│   │   └── seed.ts             # Demo data & role seeding script
+│   │   ├── schema.prisma       # Relational database schema with indexes & foreign keys
+│   │   └── seed.ts             # Database seeding script for roles & test accounts
 │   ├── src/
-│   │   ├── controllers/        # Express HTTP handlers
-│   │   ├── middlewares/        # JWT Authentication, RBAC, Zod Validation, Error Handler
-│   │   ├── modules/            # Feature modules (auth, customers, products, challans)
-│   │   ├── services/           # Business logic & transaction handlers
-│   │   ├── app.ts              # Express App setup
-│   │   └── server.ts           # HTTP Server entry point
-│   ├── Dockerfile              # Multi-stage Docker build for Render
+│   │   ├── controllers/        # HTTP Request handlers
+│   │   ├── middlewares/        # JWT Auth, Role Enforcement (RBAC), Zod Validation, Central Error Handler
+│   │   ├── services/           # Business logic & atomic database transactions
+│   │   ├── app.ts              # Express application configuration
+│   │   └── server.ts           # Server entry point
+│   ├── Dockerfile              # Production Dockerfile
 │   └── .env.example
 │
-├── shared/                     # Shared TypeScript contracts & schemas
+├── shared/                     # Shared TypeScript contracts & schemas (@op/shared)
 │   └── src/
 │       ├── enums/              # UserRole, CustomerType, CustomerStatus, ChallanStatus
 │       ├── types/              # DTO Interfaces
-│       └── validators/         # Zod schemas (including Login & Signup validators)
+│       └── validators/         # Zod schemas (Login, Signup, Customer, Product, Challan)
 │
-├── render.yaml                 # Render Blueprint specification
-├── postman_collection.json     # Postman API Collection
-└── package.json                # Root package.json managing workspace scripts
+├── docker-compose.yml          # Multi-container local orchestration
+├── render.yaml                 # Infrastructure-as-Code blueprint for Render
+├── postman_collection.json     # Ready-to-import Postman API collection
+└── package.json                # Root workspace configuration
 ```
 
 ---
 
-## 🔐 Key Features & Business Logic
+## 🌟 Key Features & Core Business Logic
 
-### 1. Authentication & Role-Based Access Control (RBAC)
-- **Role Hierarchy**: `ADMIN`, `SALES`, `WAREHOUSE`, `ACCOUNTS`.
-- **User Registration / Signup**: Supports quick registration with simple Email & Password under Login (`POST /api/auth/signup`).
-- **JWT Protection**: Secure HTTP headers with token verification & role enforcement.
+### 1. Role-Based Access Control (RBAC) & Authentication
+- **Secure Authentication**: JWT-based session tokens with 24-hour expiration.
+- **Granular Permissions**: Middleware protection enforcing role restrictions (`ADMIN`, `SALES`, `WAREHOUSE`, `ACCOUNTS`).
+- **Password Security**: Salted hashing via `bcryptjs` (10 rounds).
 
-### 2. Customer CRM Module
-- Complete client lifecycle management (`Lead` $\rightarrow$ `Active` $\rightarrow$ `Inactive`).
-- Categorization (`Retail`, `Wholesale`, `Distributor`).
-- Follow-up date scheduling and interactive CRM notes timeline (`General`, `Call`, `Meeting`, `Proposal`).
+### 2. Customer CRM Management
+- **Lifecycle Tracking**: Standardized customer states (`Lead` $\rightarrow$ `Active` $\rightarrow$ `Inactive`).
+- **Customer Classification**: Categorized as `Retail`, `Wholesale`, or `Distributor`.
+- **CRM Timeline & Notes**: Interactive history logging notes by category (`General`, `Call`, `Meeting`, `Proposal`).
+- **Complete Profile Fields**: Customer name, mobile, email, business name, GST number (optional), address, city, state, pincode, status, follow-up date, and notes.
 
-### 3. Product & Inventory Module
-- Catalog management with SKU uniqueness enforcement.
-- Low stock threshold tracking (`minStockAlert`).
-- **Immutable Stock Movement Audit Trail**: Logs every `IN` / `OUT` movement with quantity, reason, timestamp, and user attribution.
+### 3. Product & Inventory Stock Module
+- **Catalog Management**: Unique SKU code enforcement, category tagging, unit pricing, unit of measure (`pcs`, `kg`, `box`), and warehouse location.
+- **Low Stock Threshold Alerts**: Configurable `minStockAlert` per product with automated visual warning indicators.
+- **Immutable Stock Movement Audit Trail**: Comprehensive audit log recording every `IN` / `OUT` movement with quantity, previous stock level, updated stock level, reason, reference ID, timestamp, and user attribution.
 
-### 4. Sales Challan Module & Stock Logic
-- Customer selection & multi-product order assembly.
-- Automatic sequential challan number generation (e.g., `CH-2026-0001`).
-- Status lifecycle: `Draft` $\rightarrow$ `Confirmed` $\rightarrow$ `Cancelled`.
-- **Strict Business Logic**:
-  - Stock is atomically reduced upon confirmation (`ChallanStatus.CONFIRMED`).
-  - Stock **cannot go negative**. Insufficient stock returns HTTP 400 Bad Request error.
-  - Price & product snapshot data stored on each line item (immune to future catalog price changes).
-- **Invoice Export**: Printable PDF dispatch challan view (`window.print()`).
-
----
-
-## 🚀 Cloud Deployment Guide
-
-### 1. Database Setup on **Supabase**
-1. Create a free PostgreSQL project on [Supabase](https://supabase.com).
-2. Go to **Project Settings** $\rightarrow$ **Database** and copy your connection strings:
-   - **Transaction Pooler URL** (port 6543): Copy to `DATABASE_URL`
-   - **Direct Connection URL** (port 5432): Copy to `DIRECT_URL`
-3. Run Prisma migration and database seed:
-   ```bash
-   pnpm db:push
-   pnpm db:seed
-   ```
-
-### 2. Backend Deployment on **Render**
-1. Connect your GitHub repository to [Render](https://render.com).
-2. Create a new **Web Service** using the included `render.yaml` or set:
-   - **Root Directory**: `.`
-   - **Build Command**: `pnpm install && pnpm --filter @op/shared run build && pnpm --filter @op/backend run build`
-   - **Start Command**: `node backend/dist/server.js`
-3. Add Environment Variables:
-   - `NODE_ENV` = `production`
-   - `JWT_SECRET` = `your-secure-random-secret`
-   - `DATABASE_URL` = `your-supabase-pooled-db-url`
-   - `DIRECT_URL` = `your-supabase-direct-db-url`
-   - `CORS_ORIGIN` = `https://your-frontend.vercel.app`
-
-### 3. Frontend Deployment on **Vercel**
-1. Import your GitHub repository into [Vercel](https://vercel.com).
-2. Set **Root Directory**: `frontend`
-3. Vercel automatically detects Vite. Set Environment Variables:
-   - `VITE_API_BASE_URL` = `https://your-backend.onrender.com/api`
-4. Deploy! The included `frontend/vercel.json` ensures single-page application route rewrites work flawlessly.
+### 4. Sales Challan Module & Stock Transaction Integrity
+- **Sequential Auto-Numbering**: Automatic generation of challan numbers in format `CH-YYYY-XXXX`.
+- **Lifecycle State Machine**: `Draft` $\rightarrow$ `Confirmed` $\rightarrow$ `Cancelled`.
+- **Strict Business Logic & Atomic Constraints**:
+  - **Product Snapshot Storage**: Challan line items store immutable snapshot data (`productName`, `sku`, `unitPrice`) at order creation time, shielding historical invoices from master catalog price alterations.
+  - **Atomic Stock Reduction**: Stock levels are reduced atomically upon confirmation via database transactions (`prisma.$transaction`).
+  - **Negative Stock Prevention**: Stock **cannot go negative**. Insufficient stock requests trigger an explicit HTTP 400 Bad Request error detailing the failing SKU.
+  - **Invoice Export**: Native browser-optimized print view for immediate dispatch invoice printing and PDF generation (`window.print()`).
 
 ---
 
 ## 💻 Local Development Setup
 
 ### Prerequisites
-- Node.js >= 18.0.0
-- pnpm >= 8.0.0
+- **Node.js**: `>= 18.0.0`
+- **pnpm**: `>= 8.0.0`
+- **PostgreSQL**: Local database or Supabase instance
 
-### Step-by-Step Instructions
-1. Clone the repository and install dependencies:
+### Quick Start Instructions
+
+1. **Clone Repository & Install Dependencies**:
    ```bash
-   git clone <repo-url>
-   cd Operational_Portal
+   git clone https://github.com/Ak-assh/Operational_project-ERP-CRM-.git
+   cd Operational_project-ERP-CRM-
    pnpm install
    ```
 
-2. Configure environment variables in `backend/.env`:
-   ```env
-   NODE_ENV=development
-   PORT=5000
-   JWT_SECRET=super-secret-jwt-key-2026
-   DATABASE_URL="postgresql://postgres:postgres@localhost:5432/operational_portal"
+2. **Configure Environment Variables**:
+   ```bash
+   cp backend/.env.example backend/.env
    ```
 
-3. Compile shared dependencies and run dev servers:
+3. **Database Migration & Seeding**:
+   ```bash
+   pnpm --filter @op/backend db:push
+   pnpm --filter @op/backend db:seed
+   ```
+
+4. **Build Shared Package & Start Development Servers**:
    ```bash
    pnpm build:shared
    pnpm dev
    ```
-   - Frontend will run on `http://localhost:5173`
-   - Backend API will run on `http://localhost:5000`
+
+   - **Frontend UI**: `http://localhost:5173`
+   - **Backend API**: `http://localhost:5000/api`
 
 ---
 
-## 🔑 Demo Login Credentials
+## 🧪 Postman API Testing
 
-For local testing or evaluation, use the following pre-seeded credentials (Password: `password123`):
+Import [`postman_collection.json`](file:///c:/Users/KIIT/Desktop/Operational_Portal/postman_collection.json) into Postman to test all endpoints:
 
-| Role | Email | Capabilities |
-|---|---|---|
-| **Admin** | `admin@portal.com` | Full administrative access across all modules |
-| **Sales** | `sales@portal.com` | Customer CRM, Follow-ups, Create Sales Challans |
-| **Warehouse** | `warehouse@portal.com` | Product catalog, Stock movement logs IN/OUT |
-| **Accounts** | `accounts@portal.com` | View financial records, sales challans, invoice printing |
-
-Or click **"New User? Signup"** on the Login page to register a new user instantly.
+- `POST /api/auth/login` — Authenticate and receive JWT
+- `POST /api/auth/signup` — Register new user
+- `GET /api/customers` — List customers with search/filter/pagination
+- `POST /api/customers` — Create customer profile
+- `POST /api/customers/:id/notes` — Append CRM follow-up note
+- `GET /api/products` — List catalog products with stock alerts
+- `POST /api/products/stock-movement` — Log stock `IN` or `OUT`
+- `GET /api/challans` — Retrieve sales challans
+- `POST /api/challans` — Create new sales challan (Draft)
+- `POST /api/challans/:id/confirm` — Confirm sales challan & reduce stock atomically
 
 ---
 
-## 🧪 Testing with Postman
+## 🛠️ Tech Stack Matrix
 
-Import `postman_collection.json` into Postman to test all REST API endpoints:
-- `POST /api/auth/login`
-- `POST /api/auth/signup`
-- `GET /api/customers`
-- `POST /api/customers`
-- `POST /api/customers/:id/notes`
-- `GET /api/products`
-- `POST /api/products/stock-movement`
-- `GET /api/challans`
-- `POST /api/challans`
-- `POST /api/challans/:id/confirm`
+- **Frontend**: React 18, Vite, Tailwind CSS, TanStack Query v5, Zustand, Lucide Icons
+- **Backend**: Node.js, Express.js, TypeScript, Prisma ORM, Zod, JWT, bcryptjs
+- **Database**: Supabase PostgreSQL
+- **Hosting & Infrastructure**: Vercel (Frontend), Render (Backend), Docker & Docker Compose

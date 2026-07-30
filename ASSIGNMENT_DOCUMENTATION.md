@@ -14,8 +14,9 @@ This document provides a comprehensive technical overview and operational guide 
 | Resource | Link / Artifact Path | Description |
 |---|---|---|
 | **GitHub Repository** | [github.com/Ak-assh/Operational_project-ERP-CRM-](https://github.com/Ak-assh/Operational_project-ERP-CRM-) | Source code repository with commit history |
-| **Live Frontend URL** | `https://operational-project-erp-crm.vercel.app` | Production React SPA hosted on Vercel |
-| **Live Backend API URL** | `https://operational-project-erp-crm.onrender.com/api` | Production Express REST API hosted on Render |
+| **Live Frontend URL** | [https://operational-project-erp-crm-fronten.vercel.app/login](https://operational-project-erp-crm-fronten.vercel.app/login) | Production React SPA hosted on Vercel |
+| **Live Backend API URL** | [https://operational-project-erp-crm.onrender.com/api](https://operational-project-erp-crm.onrender.com) | Production Express REST API hosted on Render |
+| **Production Database** | [Supabase Project Dashboard](https://supabase.com/dashboard/project/kquffpqwvxltywxdmjhc) | Cloud PostgreSQL Instance on Supabase |
 | **Postman Collection** | [`postman_collection.json`](file:///c:/Users/KIIT/Desktop/Operational_Portal/postman_collection.json) | Importable API testing collection |
 | **Render Deployment Blueprint** | [`render.yaml`](file:///c:/Users/KIIT/Desktop/Operational_Portal/render.yaml) | Infrastructure as Code configuration for Render |
 | **Vercel SPA Config** | [`vercel.json`](file:///c:/Users/KIIT/Desktop/Operational_Portal/vercel.json) | Route rewrites configuration for SPA client routing |
