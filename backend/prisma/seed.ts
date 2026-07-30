@@ -201,10 +201,10 @@ async function main() {
   console.log('Creating customers...');
   const customers = await Promise.all([
     prisma.customer.upsert({
-      where: { id: 'cust-demo-1' },
+      where: { id: '11111111-1111-4111-a111-111111111111' },
       update: {},
       create: {
-        id: 'cust-demo-1',
+        id: '11111111-1111-4111-a111-111111111111',
         customerName: 'Acme Manufacturing Pvt Ltd',
         mobile: '+919876543210',
         email: 'procurement@acme.com',
@@ -219,10 +219,10 @@ async function main() {
       },
     }),
     prisma.customer.upsert({
-      where: { id: 'cust-demo-2' },
+      where: { id: '22222222-2222-4222-a222-222222222222' },
       update: {},
       create: {
-        id: 'cust-demo-2',
+        id: '22222222-2222-4222-a222-222222222222',
         customerName: 'Global Logistics Solutions',
         mobile: '+919812345678',
         email: 'info@globallogistics.in',
