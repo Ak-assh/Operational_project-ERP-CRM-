@@ -2,10 +2,14 @@
 
 > Enterprise-grade operational portal for wholesale & distribution companies managing Customer CRM, Product & Inventory Stock, Sales Challans, and Role-Based Access Control.
 
+[![Documentation](https://img.shields.io/badge/Documentation-Case%20Study%20Doc-blue?style=flat-square)](file:///c:/Users/KIIT/Desktop/Operational_Portal/ASSIGNMENT_DOCUMENTATION.md)
 [![Frontend: Vercel](https://img.shields.io/badge/Frontend-Vercel-black?style=flat-square&logo=vercel)](https://vercel.com)
 [![Backend: Render](https://img.shields.io/badge/Backend-Render-informational?style=flat-square&logo=render)](https://render.com)
 [![Database: Supabase](https://img.shields.io/badge/Database-Supabase%20PostgreSQL-emerald?style=flat-square&logo=supabase)](https://supabase.com)
 [![Monorepo: pnpm](https://img.shields.io/badge/Monorepo-pnpm%20workspaces-amber?style=flat-square&logo=pnpm)](https://pnpm.io)
+
+> 📄 **Complete Case Study Submission & Architecture Guide**: See [`ASSIGNMENT_DOCUMENTATION.md`](file:///c:/Users/KIIT/Desktop/Operational_Portal/ASSIGNMENT_DOCUMENTATION.md) for full assignment details, server setup, credentials, and business logic explanation.
+
 
 ---
 
