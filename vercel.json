@@ -1,0 +1,11 @@
+{
+  "buildCommand": "pnpm --filter @op/shared run build && pnpm --filter @op/frontend run build",
+  "outputDirectory": "frontend/dist",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
