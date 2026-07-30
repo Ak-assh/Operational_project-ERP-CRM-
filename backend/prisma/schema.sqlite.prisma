@@ -1,0 +1,274 @@
+// ============================================================================
+// Prisma Database Schema — SQLite Fallback Mode (Zero-Setup Local Dev)
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// ---- Roles & Permissions ----
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  displayName String   @map("display_name")
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  users           User[]
+  rolePermissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String  @id @default(uuid())
+  resource    String
+  action      String
+  description String?
+
+  rolePermissions RolePermission[]
+
+  @@unique([resource, action])
+  @@map("permissions")
+}
+
+model RolePermission {
+  id           String @id @default(uuid())
+  roleId       String @map("role_id")
+  permissionId String @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@index([roleId])
+  @@map("role_permissions")
+}
+
+// ---- Users ----
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  fullName     String    @map("full_name")
+  phone        String?
+  avatarUrl    String?   @map("avatar_url")
+  roleId       String    @map("role_id")
+  isActive     Boolean   @default(true) @map("is_active")
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  role           Role            @relation(fields: [roleId], references: [id])
+  customerNotes  CustomerNote[]
+  stockMovements StockMovement[]
+  salesChallans  SalesChallan[]
+  auditLogs      AuditLog[]
+  customers      Customer[]      @relation("CreatedByUser")
+
+  @@index([roleId])
+  @@map("users")
+}
+
+// ---- Customers ----
+
+model Customer {
+  id           String    @id @default(uuid())
+  customerName String    @map("customer_name")
+  mobile       String
+  email        String?
+  businessName String?   @map("business_name")
+  gstNumber    String?   @map("gst_number")
+  customerType String    @map("customer_type")
+  address      String?
+  city         String?
+  state        String?
+  pincode      String?
+  status       String    @default("lead")
+  followUpDate DateTime? @map("follow_up_date")
+  createdById  String?   @map("created_by")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  createdBy     User?          @relation("CreatedByUser", fields: [createdById], references: [id])
+  notes         CustomerNote[]
+  salesChallans SalesChallan[]
+
+  @@index([status])
+  @@index([customerType])
+  @@index([followUpDate])
+  @@map("customers")
+}
+
+model CustomerNote {
+  id          String    @id @default(uuid())
+  customerId  String    @map("customer_id")
+  note        String
+  noteType    String    @default("general") @map("note_type")
+  createdById String    @map("created_by")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  customer  Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdBy User     @relation(fields: [createdById], references: [id])
+
+  @@index([customerId])
+  @@map("customer_notes")
+}
+
+// ---- Products & Categories ----
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id            String    @id @default(uuid())
+  productName   String    @map("product_name")
+  sku           String    @unique
+  categoryId    String?   @map("category_id")
+  unitPrice     Decimal   @map("unit_price")
+  currentStock  Int       @default(0) @map("current_stock")
+  minStockAlert Int       @default(0) @map("min_stock_alert")
+  unit          String    @default("pcs")
+  location      String?
+  description   String?
+  imageUrl      String?   @map("image_url")
+  isActive      Boolean   @default(true) @map("is_active")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+
+  category       Category?        @relation(fields: [categoryId], references: [id])
+  stockMovements StockMovement[]
+  challanItems   SalesChallanItem[]
+
+  @@index([categoryId])
+  @@index([currentStock])
+  @@map("products")
+}
+
+// ---- Stock Movements (Immutable Audit Trail) ----
+
+model StockMovement {
+  id            String   @id @default(uuid())
+  productId     String   @map("product_id")
+  quantity      Int
+  movementType  String   @map("movement_type")
+  reason        String
+  referenceType String?  @map("reference_type")
+  referenceId   String?  @map("reference_id")
+  previousStock Int      @map("previous_stock")
+  newStock      Int      @map("new_stock")
+  createdById   String   @map("created_by")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  product   Product @relation(fields: [productId], references: [id])
+  createdBy User    @relation(fields: [createdById], references: [id])
+
+  @@index([productId])
+  @@index([createdAt])
+  @@index([movementType])
+  @@map("stock_movements")
+}
+
+// ---- Sales Challans ----
+
+model SalesChallan {
+  id                 String    @id @default(uuid())
+  challanNumber      String    @unique @map("challan_number")
+  customerId         String    @map("customer_id")
+  status             String    @default("draft")
+  totalQuantity      Int       @default(0) @map("total_quantity")
+  totalAmount        Decimal   @default(0) @map("total_amount")
+  notes              String?
+  confirmedAt        DateTime? @map("confirmed_at")
+  cancelledAt        DateTime? @map("cancelled_at")
+  cancellationReason String?   @map("cancellation_reason")
+  createdById        String    @map("created_by")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt          DateTime? @map("deleted_at")
+
+  customer  Customer           @relation(fields: [customerId], references: [id])
+  createdBy User               @relation(fields: [createdById], references: [id])
+  items     SalesChallanItem[]
+
+  @@index([customerId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("sales_challans")
+}
+
+model SalesChallanItem {
+  id          String   @id @default(uuid())
+  challanId   String   @map("challan_id")
+  productId   String   @map("product_id")
+  productName String   @map("product_name")
+  sku         String
+  unitPrice   Decimal  @map("unit_price")
+  quantity    Int
+  lineTotal   Decimal  @map("line_total")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  challan SalesChallan @relation(fields: [challanId], references: [id], onDelete: Cascade)
+  product Product      @relation(fields: [productId], references: [id])
+
+  @@index([challanId])
+  @@index([productId])
+  @@map("sales_challan_items")
+}
+
+// ---- Audit Logs (Immutable) ----
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?  @map("user_id")
+  action     String
+  resource   String
+  resourceId String?  @map("resource_id")
+  oldValues  String?  @map("old_values")
+  newValues  String?  @map("new_values")
+  ipAddress  String?  @map("ip_address")
+  userAgent  String?  @map("user_agent")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([resource, resourceId])
+  @@index([createdAt])
+  @@index([action])
+  @@map("audit_logs")
+}
+
+// ---- Sequences (Challan Number Generation) ----
+
+model Sequence {
+  id         String   @id
+  prefix     String
+  currentVal Int      @default(0) @map("current_val")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("sequences")
+}

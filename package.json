@@ -1,0 +1,30 @@
+{
+  "name": "operational-portal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mini ERP + CRM Operations Portal",
+  "scripts": {
+    "dev": "pnpm --parallel -r run dev",
+    "dev:backend": "pnpm --filter @op/backend run dev",
+    "dev:frontend": "pnpm --filter @op/frontend run dev",
+    "build": "pnpm --filter @op/shared run build && pnpm --filter @op/backend run build && pnpm --filter @op/frontend run build",
+    "build:shared": "pnpm --filter @op/shared run build",
+    "build:backend": "pnpm --filter @op/backend run build",
+    "build:frontend": "pnpm --filter @op/frontend run build",
+    "format": "prettier --write \"**/*.{ts,tsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,json,css,md}\"",
+    "db:generate": "pnpm --filter @op/backend run db:generate",
+    "db:migrate": "pnpm --filter @op/backend run db:migrate",
+    "db:seed": "pnpm --filter @op/backend run db:seed",
+    "db:push": "pnpm --filter @op/backend run db:push",
+    "clean": "pnpm -r run clean"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "prettier": "^3.2.5"
+  }
+}
